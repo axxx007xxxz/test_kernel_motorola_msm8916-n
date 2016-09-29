@@ -1,7 +1,8 @@
 #!/bin/bash
 
- # Copyright � 2016,  Sultan Qasim Khan <sultanqasim@gmail.com> 		      
- # Copyright � 2016,  Varun Chitre  <varun.chitre15@gmail.com>	
+ # Copyright � 2016, axxx007xxxz
+ # Copyright � 2016, Sultan Qasim Khan <sultanqasim@gmail.com> 		      
+ # Copyright � 2016, Varun Chitre  <varun.chitre15@gmail.com>	
  #
  # Custom build script
  #
@@ -15,50 +16,79 @@
  # GNU General Public License for more details.
  #
  # Please maintain this if you use this script or any part of it
- #
 
-#!/bin/bash
 BUILD_START=$(date +"%s")
-blue='\033[0;34m'
-cyan='\033[0;36m'
-yellow='\033[0;33m'
-red='\033[0;31m'
 nocol='\033[0m'
+blue='\033[0;34m'
+brown='\033[0;33m'
+cyan='\033[0;36m'
+green='\033[0;32m'
+lightblue='\033[1;34m'
+red='\033[0;31m'
+if [[ "$1" = "--help" || "$1" = "-h" ]]
+		then
+			echo "Usage: ./build.sh -jx"
+			echo "x is number of jobs."
+			exit
+	elif [[ "$1" == "-j"* ]]
+		then
+			jobs="${1}"
+	elif [ -z "$1" ]
+		then
+			jobs="-j`cat /proc/cpuinfo |grep -c "processor"`"
+	else
+			echo "Error!"
+			echo "Run with --help or -h for options list."
+			exit
+fi
+echo -e "${blue}Setting up${nocol}"
 export ARCH=arm
 export SUBARCH=arm
-export CROSS_COMPILE=/home/anderson/uber-4.9/bin/arm-eabi-
-export KBUILD_BUILD_USER="anderson"
-export KBUILD_BUILD_HOST="anderson@localhost-technoander"
-echo -e "$nocol***********************************************"
-echo "          Compiling Coffee Kernel COLOMBIA!!!!                          "   
-echo -e "**********************************************$nocol"
+export CROSS_COMPILE=$(xdg-user-dir)/tools/ubertc-arm-eabi-4.9/bin/arm-eabi-
+kernelname="Test"
+kernelversion="2"
+echo
+echo -e "${blue}Cleaning${nocol}"
+make ${jobs} clean
 rm -f arch/arm/boot/dts/*.dtb
 rm -f arch/arm/boot/dt.img
-rm -f flash_zip/boot.img
-echo -e " Initializing defconfig"
-make lux_defconfig
-echo -e " Building kernel"
-make -j4 zImage
-make -j4 dtbs
-
-/home/anderson/CoffeeKernel/tools/dtbToolCM -o /home/anderson/CoffeeKernel/arch/arm/boot/dt.img -s 2048 -p /home/anderson/CoffeeKernel/scripts/dtc/ /home/anderson/CoffeeKernel/arch/arm/boot/dts/
-
-make -j4 modules
-echo -e "$nocol*************************"
-echo "          Make flashable zip              "
-echo -e "*******************************$nocol"
-rm -rf anderson_install
-mkdir -p anderson_install
-make -j4 modules_install INSTALL_MOD_PATH=anderson_install INSTALL_MOD_STRIP=1
-mkdir -p flash_zip/system/lib/modules/pronto
-find anderson_install/ -name '*.ko' -type f -exec cp '{}' flash_zip/system/lib/modules/ \;
-mv flash_zip/system/lib/modules/wlan.ko flash_zip/system/lib/modules/pronto/pronto_wlan.ko
-cp arch/arm/boot/zImage flash_zip/tools/
-cp arch/arm/boot/dt.img flash_zip/tools/
-rm -f /home/anderson/lux_coffeekernel_rx.zip
-cd flash_zip
-zip -r ../arch/arm/boot/coffeekernel.zip ./
-mv /home/anderson/CoffeeKernel/arch/arm/boot/coffee_kernel.zip /home/anderson/lux_coffeekernel_rx.zip
+rm -fr tmp
+rm -f flash/zImage
+rm -f flash/dt.img
+rm -fr flash/modules/*
+rm -f ${kernelname}_v*.zip
+echo
+echo
+echo -e "${lightblue}Compiling ${kernelname} Kernel${nocol}"
+echo
+echo -e "${blue}Initializing defconfig${nocol}"
+make test-lux_defconfig
+echo
+echo -e "${blue}Building kernel${nocol}"
+make ${jobs} zImage
+make ${jobs} dtbs
+echo
+echo -e "${blue}Generating master DTB${nocol}"
+tools/dtbToolCM -o arch/arm/boot/dt.img -s 2048 -p scripts/dtc/ arch/arm/boot/dts/
+echo
+echo -e "${blue}Building modules${nocol}"
+make ${jobs} modules
+echo
+echo -e "${blue}Making flashable zip${nocol}"
+mkdir -p tmp/system
+make ${jobs} modules_install INSTALL_MOD_PATH=tmp/system INSTALL_MOD_STRIP=1
+mkdir -p tmp/flash/modules/pronto
+find tmp/system/ -name '*.ko' -type f -exec cp '{}' tmp/flash/modules/ \;
+mv tmp/flash/modules/wlan.ko tmp/flash/modules/pronto/pronto_wlan.ko
+mv arch/arm/boot/zImage flash/
+mv arch/arm/boot/dt.img flash/
+cp -r tmp/flash/modules/* flash/modules/
+cd flash/
+zip -qr ../${kernelname}_v${kernelversion}.zip * -x .gitignore
+cd ../
+echo
+echo
+echo
 BUILD_END=$(date +"%s")
 DIFF=$(($BUILD_END - $BUILD_START))
-echo -e "$yellow Build completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds.$nocol"
+echo -e "$(tput bold)${cyan}Build completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds!${nocol}$(tput sgr0)"
