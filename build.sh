@@ -49,7 +49,7 @@ kernelname="Test"
 kernelversion="2"
 echo
 echo -e "${blue}Cleaning${nocol}"
-make ${jobs} clean
+make ${jobs} mrproper
 rm -f arch/arm/boot/dts/*.dtb
 rm -f arch/arm/boot/dt.img
 rm -fr tmp
