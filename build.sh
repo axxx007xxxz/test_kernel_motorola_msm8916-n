@@ -47,6 +47,7 @@ export SUBARCH=arm
 export CROSS_COMPILE=$(xdg-user-dir)/tools/ubertc-arm-eabi-4.9/bin/arm-eabi-
 kernelname="Test"
 kernelversion="2"
+kernelrevision="1"
 echo
 echo -e "${blue}Cleaning${nocol}"
 make ${jobs} mrproper
@@ -84,7 +85,7 @@ mv arch/arm/boot/zImage flash/
 mv arch/arm/boot/dt.img flash/
 cp -r tmp/flash/modules/* flash/modules/
 cd flash/
-zip -qr ../${kernelname}_v${kernelversion}.zip * -x .gitignore
+zip -qr ../${kernelname}_v${kernelversion}_r${kernelrevision}.zip * -x .gitignore
 cd ../
 echo
 echo
