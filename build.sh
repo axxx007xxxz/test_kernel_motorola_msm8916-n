@@ -80,7 +80,6 @@ mkdir -p tmp/system
 make ${jobs} modules_install INSTALL_MOD_PATH=tmp/system INSTALL_MOD_STRIP=1
 mkdir -p tmp/flash/modules/pronto
 find tmp/system/ -name '*.ko' -type f -exec cp '{}' tmp/flash/modules/ \;
-mv tmp/flash/modules/wlan.ko tmp/flash/modules/pronto/pronto_wlan.ko
 mv arch/arm/boot/zImage flash/
 mv arch/arm/boot/dt.img flash/
 cp -r tmp/flash/modules/* flash/modules/
