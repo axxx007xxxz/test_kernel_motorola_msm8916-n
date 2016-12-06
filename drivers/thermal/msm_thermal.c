@@ -3798,7 +3798,7 @@ static ssize_t __ref store_cc_enabled(struct kobject *kobj,
 
 	core_control_enabled = !!val;
 	if (core_control_enabled) {
-		pr_info("Core control enabled\n");
+		pr_debug("Core control enabled\n");
 		register_cpu_notifier(&msm_thermal_cpu_notifier);
 		/*
 		 * Re-evaluate thermal core condition, update current status
@@ -3818,7 +3818,7 @@ static ssize_t __ref store_cc_enabled(struct kobject *kobj,
 		}
 		mutex_unlock(&core_control_mutex);
 	} else {
-		pr_info("Core control disabled\n");
+		pr_debug("Core control disabled\n");
 		unregister_cpu_notifier(&msm_thermal_cpu_notifier);
 	}
 
