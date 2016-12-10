@@ -78,7 +78,7 @@ echo
 echo -e "${blue}Making flashable zip${nocol}"
 mkdir -p tmp/system
 make ${jobs} modules_install INSTALL_MOD_PATH=tmp/system INSTALL_MOD_STRIP=1
-mkdir -p tmp/flash/modules/pronto
+mkdir -p tmp/flash/modules
 find tmp/system/ -name '*.ko' -type f -exec cp '{}' tmp/flash/modules/ \;
 mv arch/arm/boot/zImage flash/
 mv arch/arm/boot/dt.img flash/
