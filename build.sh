@@ -47,7 +47,7 @@ export SUBARCH=arm
 export CROSS_COMPILE=$(xdg-user-dir)/tools/ubertc-arm-eabi-4.9/bin/arm-eabi-
 kernelname="Test"
 kernelversion="2"
-kernelrevision="4"
+kernelrevision="5"
 echo
 echo -e "${blue}Cleaning${nocol}"
 make ${jobs} mrproper
