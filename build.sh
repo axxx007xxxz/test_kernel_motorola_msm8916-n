@@ -1,8 +1,8 @@
 #!/bin/bash
 
- # Copyright � 2016, axxx007xxxz
- # Copyright � 2016, Sultan Qasim Khan <sultanqasim@gmail.com> 		      
- # Copyright � 2016, Varun Chitre  <varun.chitre15@gmail.com>	
+ # Copyright � 2016, Sultan Qasim Khan <sultanqasim@gmail.com>
+ # Copyright � 2016, Varun Chitre  <varun.chitre15@gmail.com>
+ # Copyright � 2017, axxx007xxxz
  #
  # Custom build script
  #
