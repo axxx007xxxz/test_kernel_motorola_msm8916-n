@@ -44,7 +44,7 @@ fi
 echo -e "${blue}Setting up${nocol}"
 export ARCH=arm
 export SUBARCH=arm
-export CROSS_COMPILE=$(xdg-user-dir)/tools/ubertc-arm-eabi-4.9/bin/arm-eabi-
+export CROSS_COMPILE=${HOME}/tools/ubertc-arm-eabi-4.9/bin/arm-eabi-
 kernelname="Test"
 kernelversion="2"
 kernelrevision="7"
